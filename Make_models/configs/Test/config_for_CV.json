@@ -1,0 +1,71 @@
+{
+    "save": {
+        "val_time_save": true,
+        "history_save": true
+    },
+    "data_loader": {
+        "num_of_ts": 500,
+        "path_to_present_dir": "/home/hasegawa/work/Various_shapes_of_bluff_body",
+        "x_num": 384,
+        "y_num": 192,
+        "phys_num": 3,
+        "kind_num": 1,
+        "aumont_kind": 100,
+        "with_shape": true,
+        "train": true,
+        "ratio_tr_te": 0.2
+    },
+    "model": {
+        "name": "CNN-AE",
+        "multi_scale": true,
+        "learning_rate": 0.001,
+        "optimizer": "SGD",
+        "act": "relu",
+        "filsize": [
+            3,
+            5,
+            9
+        ],
+        "layer_nm": [
+            1,
+            4,
+            2
+        ],
+        "chanel_nm": [
+            16,
+            8,
+            4
+        ],
+        "loss": "gdl_mse"
+    },
+    "trainer": {
+        "use_CV": true,
+        "n_splits": 5,
+        "name": "simple_mnist_trainer.SimpleMnistModelTrainer",
+        "num_epochs": 1,
+        "batch_size": 100,
+        "shuffle": true,
+        "verbose": 1
+    },
+    "callbacks": {
+        "modelcheckpoint": true,
+        "save_file": "/CNN_autoencoder/",
+        "model_name": "Test_test_CV",
+        "cp_monitor": "val_loss",
+        "cp_save_best_only": true,
+        "cp_verbose": 1,
+        "earlystopping": true,
+        "es_monitor": "val_loss",
+        "es_patience": 40,
+        "es_verbose": 1,
+        "tensorboard": false,
+        "tensorboard_log_dir": "",
+        "tensorboard_write_graph": true,
+        "reduceLR": true,
+        "reduceLR_monitor": "val_loss",
+        "": "new_LR = LR * reduceLR_factor",
+        "reduceLR_factor": 0.2,
+        "reduceLR_patience": 20,
+        "reduceLR_verbose": 1
+    }
+}
