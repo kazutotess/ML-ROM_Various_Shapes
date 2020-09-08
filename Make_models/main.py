@@ -5,6 +5,7 @@ from utils.config import process_config
 from utils.utils import get_args
 from trainers.Trainer import *
 
+
 def main():
     try:
         args = get_args()
@@ -12,9 +13,10 @@ def main():
     except:
         print("missing or invalid arguments")
         exit(0)
-    
+
     if config.GPU.multi_gpu:
-        config.trainer.batch_size = config.trainer.batch_size * config.GPU.gpu_count
+        config.trainer.batch_size = config.trainer.batch_size *\
+            config.GPU.gpu_count
 
     print('Create the data generator.')
     if config.model.name == 'CNN-AE':
