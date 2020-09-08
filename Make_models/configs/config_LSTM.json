@@ -1,6 +1,6 @@
 {
     "GPU": {
-        "number": "1",
+        "number": "3",
         "multi_gpu": false,
         "gpu_count": 1
     },
@@ -54,7 +54,7 @@
         "use_CV": false,
         "n_splits": 5,
         "": "------------------------------------",
-        "num_epochs": 100,
+        "num_epochs": 2,
         "batch_size": 1000,
         "shuffle": true,
         "verbose": 1
@@ -63,7 +63,7 @@
         "": "--------- model checkpoint ---------",
         "modelcheckpoint": true,
         "save_file": "/LSTM/",
-        "model_name": "maxlen_20",
+        "model_name": "Test_LSTM",
         "cp_monitor": "val_loss",
         "cp_save_best_only": true,
         "cp_verbose": 1,

@@ -20,7 +20,7 @@
         "train": true,
         "ratio_tr_te": 0.2,
         "": "--------- generator condition ---------",
-        "generator": true
+        "generator": false
     },
     "model": {
         "name": "CNN-AE",
@@ -52,10 +52,10 @@
     },
     "trainer": {
         "": "--------- cross validation ---------",
-        "use_CV": true,
+        "use_CV": false,
         "n_splits": 4,
         "": "------------------------------------",
-        "num_epochs": 200,
+        "num_epochs": 2,
         "batch_size": 50,
         "shuffle": true,
         "verbose": 1
@@ -64,7 +64,7 @@
         "": "--------- model checkpoint ---------",
         "modelcheckpoint": true,
         "save_file": "/CNN_autoencoder/",
-        "model_name": "Test_test",
+        "model_name": "Test_CNN_AE",
         "cp_monitor": "val_loss",
         "cp_save_best_only": true,
         "cp_verbose": 1,
