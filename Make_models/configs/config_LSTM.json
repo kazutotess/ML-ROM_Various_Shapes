@@ -20,7 +20,7 @@
         "maxlen": 20,
         "time_step": 1,
         "data_size": 72,
-        "path_to_present_dir": "/home/hasegawa/work/Various_shapes_of_bluff_body",
+        "path_to_present_dir": "../",
         "with_shape": true,
         "train": true,
         "ratio_tr_te": 0.2

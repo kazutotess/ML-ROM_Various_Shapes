@@ -1,7 +1,5 @@
 import json
 from dotmap import DotMap
-import os
-import time
 
 
 def get_config_from_json(json_file):

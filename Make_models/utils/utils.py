@@ -1,14 +1,9 @@
 import argparse
 from keras.callbacks import Callback
 
-import os
-import csv
-import six
-
 import numpy as np
-import time
-import json
 import warnings
+
 
 def get_args():
     argparser = argparse.ArgumentParser(description=__doc__)
@@ -20,6 +15,7 @@ def get_args():
         help='The Configuration file')
     args = argparser.parse_args()
     return args
+
 
 class MultiGPUCheckpointCallback(Callback):
 
@@ -76,7 +72,8 @@ class MultiGPUCheckpointCallback(Callback):
                                      current, filepath))
                         self.best = current
                         if self.save_weights_only:
-                            self.base_model.save_weights(filepath, overwrite=True)
+                            self.base_model.save_weights(
+                                filepath, overwrite=True)
                         else:
                             self.base_model.save(filepath, overwrite=True)
                     else:
@@ -85,7 +82,8 @@ class MultiGPUCheckpointCallback(Callback):
                                   (epoch + 1, self.monitor))
             else:
                 if self.verbose > 0:
-                    print('Epoch %05d: saving model to %s' % (epoch + 1, filepath))
+                    print('Epoch %05d: saving model to %s' %
+                          (epoch + 1, filepath))
                 if self.save_weights_only:
                     self.base_model.save_weights(filepath, overwrite=True)
                 else:

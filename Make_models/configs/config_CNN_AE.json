@@ -10,7 +10,7 @@
     },
     "data_loader": {
         "num_of_ts": 500,
-        "path_to_present_dir": "/home/hasegawa/work/Various_shapes_of_bluff_body",
+        "path_to_present_dir": "../",
         "x_num": 384,
         "y_num": 192,
         "phys_num": 3,

@@ -151,15 +151,14 @@ def main():
     session = tf.Session(config=config)
     tensorflow_backend.set_session(session)
 
-    # input parameters
-    kind_num = 80  # number of shapes
+    # set parameters
+    kind_num = 2  # number of shapes
     num_of_ts = 500  # number of instantaneous fields for each shapes
     x_num = 384  # grid point of x direction
     y_num = 192  # grid point of y direction
     phys_num = 3  # u, v, p
 
-    # directory which contains flow data
-    path_to_present_dir = '/home/hasegawa/work/Various_shapes_of_bluff_body'
+    path_to_present_dir = './'  # directory which contains flow data
     save_file = '/CNN_autoencoder/'  # directory for saving ML model
     model_name = 'Test_CNN_AE'  # name of ML model file
     # the model will be saved as
@@ -180,7 +179,7 @@ def main():
                   x_num, y_num, phys_num])
 
     for i in tqdm(range(1, kind_num + 1)):
-        fnstr = path_to_present_dir + '/pickles/data_' + \
+        fnstr = path_to_present_dir + '/data/pickles/data_' + \
             '{0:03d}'.format(i)+'.pickle'
 
         # Pickle load

@@ -28,29 +28,15 @@ class Dataloader():
         if self.config.data_loader.train:
             self.X = np.zeros([self.kind_num, self.num_of_ts,
                                self.x_num, self.y_num, self.phys_num])
-            if self.config.data_loader.with_shape:
-                self.X = np.zeros([self.kind_num, self.num_of_ts,
-                                   self.x_num, self.y_num, self.phys_num + 1])
 
             for i in tqdm(range(1, self.kind_num + 1)):
-                fnstr = self.path_to_present_dir + '/pickles/data_' + \
+                fnstr = self.path_to_present_dir + '/data/pickles/data_' + \
                     '{0:03d}'.format(i)+'.pickle'
-
-                if self.config.data_loader.with_shape:
-                    tempfn = self.path_to_present_dir + \
-                        '/CNN_autoencoder/Flags_for_training/Flag' + \
-                        '{0:03d}'.format(i)+'.csv'
-                    data = pd.read_csv(tempfn, header=None,
-                                       delim_whitespace=False)
-                    data = data.values
                 # Pickle load
 
                 with open(fnstr, 'rb') as f:
                     obj = pickle.load(f)
                 self.X[i - 1, :, :, :, :self.phys_num] = obj[:self.num_of_ts]
-
-                if self.config.data_loader.with_shape:
-                    self.X[i - 1, :, :, :, self.phys_num] = data
 
             self.X = np.reshape(
                 self.X,
@@ -68,25 +54,14 @@ class Dataloader():
             for i in tqdm(
                 range(1, self.config.aumont_kind - self.kind_num + 1)
             ):
-                fnstr = self.path_to_present_dir + '/pickles/Test_data/data_' \
+                fnstr = self.path_to_present_dir + '/data/pickles/Test_data/data_' \
                     + '{0:03d}'.format(i)+'.pickle'
-
-                if self.config.data_loader.with_shape:
-                    tempfn = self.path_to_present_dir + \
-                        '/CNN_autoencoder/Flags_for_training/Test_data/Flag' \
-                        + '{0:03d}'.format(i)+'.csv'
-                    data = pd.read_csv(tempfn, header=None,
-                                       delim_whitespace=False)
-                    data = data.values
 
                 # Pickle load
                 with open(fnstr, 'rb') as f:
                     obj = pickle.load(f)
                 self.X[i - 1, :, :, :, :self.phys_num] = \
                     obj[:self.x_numnum_of_ts]
-
-                if self.config.data_loader.with_shape:
-                    self.X[i - 1, :, :, :, self.phys_num] = data
 
     def test_train_split(self):
         x_train, x_test, y_train, y_test = \
@@ -95,6 +70,7 @@ class Dataloader():
                              test_size=self.config.data_loader.ratio_tr_te,
                              random_state=None)
         return x_train, x_test, y_train, y_test
+
 
 class Dataloader_LSTM():
     def __init__(self, config):
@@ -106,19 +82,19 @@ class Dataloader_LSTM():
         self.time_step = self.config.data_loader.time_step
         self.data_size = self.config.data_loader.data_size
         self.path_to_present_dir = self.config.data_loader.path_to_present_dir
-        self.path_data = self.path_to_present_dir + '/LSTM/Dataset/' + \
+        self.path_data = self.path_to_present_dir + '/data/LSTM/Dataset/' + \
             self.config.data_loader.dataset_name
-            
+
         assert self.num_of_ts + self.time_step * (self.maxlen - 1) < \
             self.num_of_ts_for_data, 'The data aumont is not enough.'
 
         self.data_load()
         self.make_dataset()
-    
+
     def data_load(self):
         self.data_LSTM = pd.read_csv(
             self.path_data, header=None, delim_whitespace=False
-            )
+        )
         self.data_LSTM = self.data_LSTM.values
 
         if self.config.data_loader.with_shape:
@@ -128,17 +104,17 @@ class Dataloader_LSTM():
             ])
             for i in range(self.number_of_shape):
                 data_CNN = pd.read_csv(
-                    self.path_to_present_dir + \
-                        '/LSTM/Flags_for_training_LSTM/Flag' + \
-                        '{0:03d}'.format(i + 1) + '.csv',
+                    self.path_to_present_dir +
+                    '/data/LSTM/Flags/Flag' +
+                    '{0:03d}'.format(i + 1) + '.csv',
                     header=None,
                     delim_whitespace=False
                 )
                 data_CNN = data_CNN.values
                 self.X_CNN[
-                    i * self.num_of_ts : (i + 1) * self.num_of_ts,
+                    i * self.num_of_ts: (i + 1) * self.num_of_ts,
                     :, :, 0
-                    ] = data_CNN
+                ] = data_CNN
 
     def make_dataset(self):
         self.X = np.zeros(
@@ -167,32 +143,32 @@ class Dataloader_LSTM():
             for j in range(self.num_of_ts):
                 self.X[i * self.num_of_ts + j] = \
                     self.data_LSTM[
-                        i * self.num_of_ts_for_data + j : \
-                            i * self.num_of_ts_for_data + j + \
-                            self.time_step * self.maxlen : self.time_step
-                    ]
+                        i * self.num_of_ts_for_data + j:
+                    i * self.num_of_ts_for_data + j +
+                    self.time_step * self.maxlen: self.time_step
+                ]
                 if self.config.model.return_sequence[-1]:
                     self.Y[i * self.num_of_ts + j] = \
                         self.data_LSTM[
-                            i * self.num_of_ts_for_data + j + 1 : \
-                                i * self.num_of_ts_for_data + j + \
-                                self.time_step * self.maxlen + 1: self.time_step
-                        ]
+                            i * self.num_of_ts_for_data + j + 1:
+                        i * self.num_of_ts_for_data + j +
+                        self.time_step * self.maxlen + 1: self.time_step
+                    ]
                 else:
                     self.Y[i * self.num_of_ts + j] = \
                         self.data_LSTM[
-                            i * self.num_of_ts_for_data + j + \
-                                self.time_step * self.maxlen
-                        ]
+                            i * self.num_of_ts_for_data + j +
+                        self.time_step * self.maxlen
+                    ]
 
     def test_train_split(self):
         if self.config.data_loader.with_shape:
             X_CNN_train, X_CNN_test, X_train, X_test, y_train, y_test = \
                 train_test_split(self.X_CNN,
-                                self.X,
-                                self.Y,
-                                test_size=self.config.data_loader.ratio_tr_te,
-                                random_state=None)
+                                 self.X,
+                                 self.Y,
+                                 test_size=self.config.data_loader.ratio_tr_te,
+                                 random_state=None)
             x_train = [X_CNN_train, X_train]
             x_test = [X_CNN_test, X_test]
             return x_train, x_test, y_train, y_test
@@ -200,10 +176,11 @@ class Dataloader_LSTM():
         else:
             x_train, x_test, y_train, y_test = \
                 train_test_split(self.X,
-                                self.Y,
-                                test_size=self.config.data_loader.ratio_tr_te,
-                                random_state=None)
+                                 self.Y,
+                                 test_size=self.config.data_loader.ratio_tr_te,
+                                 random_state=None)
             return x_train, x_test, y_train, y_test
+
 
 class Datagenerator_for_AE(Sequence):
     def __init__(self, config):
@@ -215,31 +192,35 @@ class Datagenerator_for_AE(Sequence):
         self.phys_num = self.config.data_loader.phys_num
         self.index = []
         self.devide_train_test()
-        self.length = math.ceil(len(self.X) / self.n_split * (self.n_split - 1) / self.batch_size)
-    
+        self.length = math.ceil(
+            len(self.X) / self.n_split * (self.n_split - 1) / self.batch_size)
+
     def devide_train_test(self):
         for i in range(self.config.data_loader.kind_num):
             for j in range(self.config.data_loader.num_of_ts):
                 self.index.append([i + 1,  j + 1])
         random.shuffle(self.index)
-        self.val_num = int(len(self.index) * self.config.data_loader.ratio_tr_te)
+        self.val_num = int(len(self.index) *
+                           self.config.data_loader.ratio_tr_te)
         self.val_index = self.index[-self.val_num:]
         self.tra_index = self.index[:-self.val_num]
 
     def make_val_data(self):
-        val_data = np.zeros([len(self.val_index), self.x_num, 
-                            self.y_num, 
-                            self.phys_num])
+        val_data = np.zeros([len(self.val_index), self.x_num,
+                             self.y_num,
+                             self.phys_num])
         print('\nLoading the validation data.')
         for i in tqdm(range(len(self.val_index))):
             file_name = self.path_to_present_dir + '/Training_data/UVP_' + \
-                '{0:03d}'.format(self.val_index[i][0]) + '_' + '{0:04d}'.format(self.val_index[i][1])
-            VAL_DATA = pd.read_csv(file_name, header=None, delim_whitespace=False)
+                '{0:03d}'.format(
+                    self.val_index[i][0]) + '_' + '{0:04d}'.format(self.val_index[i][1])
+            VAL_DATA = pd.read_csv(
+                file_name, header=None, delim_whitespace=False)
             VAL_DATA = np.array(VAL_DATA)
             val_data[i] = VAL_DATA.reshape(
-                            self.x_num, 
-                            self.y_num, 
-                            self.phys_num)
+                self.x_num,
+                self.y_num,
+                self.phys_num)
         return val_data, val_data
 
     def __getitem__(self, idx):
@@ -252,13 +233,14 @@ class Datagenerator_for_AE(Sequence):
         tra_data = np.zeros([bs, self.x_num, self.y_num, self.phys_num])
         for i in range(bs):
             file_name = self.path_to_present_dir + '/Training_data/UVP_' + \
-                    '{0:03d}'.format(self.tra_index[idx * self.batch_size + i][0]) + '_' + \
-                        '{0:04d}'.format(self.tra_index[idx * self.batch_size + i][1])
-            TRA_DATA = pd.read_csv(file_name, header=None, delim_whitespace=False)
+                '{0:03d}'.format(self.tra_index[idx * self.batch_size + i][0]) + '_' + \
+                '{0:04d}'.format(self.tra_index[idx * self.batch_size + i][1])
+            TRA_DATA = pd.read_csv(
+                file_name, header=None, delim_whitespace=False)
             TRA_DATA = np.array(TRA_DATA)
-            tra_data[i] = TRA_DATA.reshape(self.x_num, 
-                                self.y_num, 
-                                self.phys_num)
+            tra_data[i] = TRA_DATA.reshape(self.x_num,
+                                           self.y_num,
+                                           self.phys_num)
         return tra_data, tra_data
 
     def __len__(self):
@@ -266,6 +248,7 @@ class Datagenerator_for_AE(Sequence):
 
     def on_epoch_end(self):
         pass
+
 
 class gen_for_AE_with_shape(Sequence):
     def __init__(self, config):
@@ -277,35 +260,39 @@ class gen_for_AE_with_shape(Sequence):
         self.phys_num = self.config.data_loader.phys_num
         self.index = []
         self.devide_train_test()
-        self.length = math.ceil(len(self.X) / self.n_split * (self.n_split - 1) / self.batch_size)
-    
+        self.length = math.ceil(
+            len(self.X) / self.n_split * (self.n_split - 1) / self.batch_size)
+
     def devide_train_test(self):
         for i in range(self.config.data_loader.kind_num):
             for j in range(self.config.data_loader.num_of_ts):
                 self.index.append([i + 1,  j + 1])
         random.shuffle(self.index)
-        self.val_num = int(len(self.index) * self.config.data_loader.ratio_tr_te)
+        self.val_num = int(len(self.index) *
+                           self.config.data_loader.ratio_tr_te)
         self.val_index = self.index[-self.val_num:]
         self.tra_index = self.index[:-self.val_num]
 
     def make_val_data(self):
         val_data = np.zeros([len(self.val_index),
-                            self.x_num, self.y_num, self.phys_num + 1])
+                             self.x_num, self.y_num, self.phys_num + 1])
         print('\nLoading the validation data.')
         for i in tqdm(range(len(self.val_index))):
             file_name = self.path_to_present_dir + '/Training_data/UVP_' + \
-                '{0:03d}'.format(self.val_index[i][0]) + '_' + '{0:04d}'.format(self.val_index[i][1])
-            VAL_DATA = pd.read_csv(file_name, header=None, delim_whitespace=False)
+                '{0:03d}'.format(
+                    self.val_index[i][0]) + '_' + '{0:04d}'.format(self.val_index[i][1])
+            VAL_DATA = pd.read_csv(
+                file_name, header=None, delim_whitespace=False)
             VAL_DATA = np.array(VAL_DATA)
             val_data[i, :, :, :self.phys_num] = VAL_DATA.reshape(
-                            self.x_num, 
-                            self.y_num, 
-                            self.phys_num)
+                self.x_num,
+                self.y_num,
+                self.phys_num)
             tempfn = self.path_to_present_dir + \
                 '/CNN_autoencoder/Flags_for_training/Flag' + \
                 '{0:03d}'.format(self.val_index[i][0])+'.csv'
             data = pd.read_csv(tempfn, header=None,
-                                delim_whitespace=False)
+                               delim_whitespace=False)
             data = data.values
             val_data[i, :, :, self.phys_num] = data
         return val_data, val_data[:, :, :, :self.phys_num]
@@ -318,21 +305,23 @@ class gen_for_AE_with_shape(Sequence):
         else:
             bs = self.batch_size
         tra_data = np.zeros([bs,
-                            self.x_num, self.y_num, self.phys_num + 1])
+                             self.x_num, self.y_num, self.phys_num + 1])
         for i in range(bs):
             file_name = self.path_to_present_dir + '/Training_data/UVP_' + \
-                    '{0:03d}'.format(self.tra_index[idx * self.batch_size + i][0]) + '_' + \
-                        '{0:04d}'.format(self.tra_index[idx * self.batch_size + i][1])
-            TRA_DATA = pd.read_csv(file_name, header=None, delim_whitespace=False)
+                '{0:03d}'.format(self.tra_index[idx * self.batch_size + i][0]) + '_' + \
+                '{0:04d}'.format(self.tra_index[idx * self.batch_size + i][1])
+            TRA_DATA = pd.read_csv(
+                file_name, header=None, delim_whitespace=False)
             TRA_DATA = np.array(TRA_DATA)
-            tra_data[i, :, :, :self.phys_num] = TRA_DATA.reshape(self.x_num, 
-                                self.y_num, 
-                                self.phys_num)
+            tra_data[i, :, :, :self.phys_num] = TRA_DATA.reshape(self.x_num,
+                                                                 self.y_num,
+                                                                 self.phys_num)
             tempfn = self.path_to_present_dir + \
                 '/CNN_autoencoder/Flags_for_training/Flag' + \
-                '{0:03d}'.format(self.tra_index[idx * self.batch_size + i][0])+'.csv'
+                '{0:03d}'.format(
+                    self.tra_index[idx * self.batch_size + i][0])+'.csv'
             data = pd.read_csv(tempfn, header=None,
-                                delim_whitespace=False)
+                               delim_whitespace=False)
             data = data.values
             tra_data[i, :, :, self.phys_num] = data
         return tra_data, tra_data[:, :, :, :self.phys_num]
@@ -342,6 +331,7 @@ class gen_for_AE_with_shape(Sequence):
 
     def on_epoch_end(self):
         pass
+
 
 class Datagenerator_for_AE_with_CV(Sequence):
     def __init__(self, config):
@@ -358,32 +348,35 @@ class Datagenerator_for_AE_with_CV(Sequence):
                 self.X.append([i + 1,  j + 1])
         self.X = np.array(self.X)
         self.index_generator = self.devide_train_test()
-        self.length = math.ceil(len(self.X) / self.n_split * (self.n_split - 1) / self.batch_size)
-    
+        self.length = math.ceil(
+            len(self.X) / self.n_split * (self.n_split - 1) / self.batch_size)
+
     def devide_train_test(self):
         self.val_num = int(len(self.X) * self.config.data_loader.ratio_tr_te)
         kf = KFold(n_splits=self.n_split, random_state=None, shuffle=True)
         while True:
             for train_index, test_index in kf.split(self.X):
                 self.tra_index, self.val_index = \
-                        self.X[train_index], self.X[test_index]
+                    self.X[train_index], self.X[test_index]
                 yield
 
     def make_val_data(self):
         next(self.index_generator)
-        val_data = np.zeros([len(self.val_index), self.x_num, 
-                            self.y_num, 
-                            self.phys_num])
+        val_data = np.zeros([len(self.val_index), self.x_num,
+                             self.y_num,
+                             self.phys_num])
         print('\nLoading the validation data.')
         for i in tqdm(range(len(self.val_index))):
             file_name = self.path_to_present_dir + '/Training_data/UVP_' + \
-                '{0:03d}'.format(self.val_index[i][0]) + '_' + '{0:04d}'.format(self.val_index[i][1])
-            VAL_DATA = pd.read_csv(file_name, header=None, delim_whitespace=False)
+                '{0:03d}'.format(
+                    self.val_index[i][0]) + '_' + '{0:04d}'.format(self.val_index[i][1])
+            VAL_DATA = pd.read_csv(
+                file_name, header=None, delim_whitespace=False)
             VAL_DATA = np.array(VAL_DATA)
             val_data[i] = VAL_DATA.reshape(
-                            self.x_num, 
-                            self.y_num, 
-                            self.phys_num)
+                self.x_num,
+                self.y_num,
+                self.phys_num)
         return val_data, val_data
 
     def __getitem__(self, idx):
@@ -396,13 +389,14 @@ class Datagenerator_for_AE_with_CV(Sequence):
         tra_data = np.zeros([bs, self.x_num, self.y_num, self.phys_num])
         for i in range(bs):
             file_name = self.path_to_present_dir + '/Training_data/UVP_' + \
-                    '{0:03d}'.format(self.tra_index[idx * self.batch_size + i][0]) + '_' + \
-                        '{0:04d}'.format(self.tra_index[idx * self.batch_size + i][1])
-            TRA_DATA = pd.read_csv(file_name, header=None, delim_whitespace=False)
+                '{0:03d}'.format(self.tra_index[idx * self.batch_size + i][0]) + '_' + \
+                '{0:04d}'.format(self.tra_index[idx * self.batch_size + i][1])
+            TRA_DATA = pd.read_csv(
+                file_name, header=None, delim_whitespace=False)
             TRA_DATA = np.array(TRA_DATA)
-            tra_data[i] = TRA_DATA.reshape(self.x_num, 
-                                self.y_num, 
-                                self.phys_num)
+            tra_data[i] = TRA_DATA.reshape(self.x_num,
+                                           self.y_num,
+                                           self.phys_num)
         return tra_data, tra_data
 
     def __len__(self):
@@ -410,6 +404,7 @@ class Datagenerator_for_AE_with_CV(Sequence):
 
     def on_epoch_end(self):
         pass
+
 
 class gen_for_LSTM(Sequence):
     def __init__(self, config):
@@ -429,11 +424,11 @@ class gen_for_LSTM(Sequence):
             self.config.data_loader.dataset_name
         self.data_load()
         self.make_dataset()
-    
+
     def data_load(self):
         self.data_LSTM = pd.read_csv(
             self.path_data, header=None, delim_whitespace=False
-            )
+        )
         self.data_LSTM = self.data_LSTM.values
         self.data_LSTM = np.reshape(
             self.data_LSTM, (
@@ -450,9 +445,9 @@ class gen_for_LSTM(Sequence):
             ])
             for i in range(self.number_of_shape):
                 DATA_CNN = pd.read_csv(
-                    self.path_to_present_dir + \
-                        '/LSTM/Flags_for_training_LSTM/Flag' + \
-                        '{0:03d}'.format(i + 1) + '.csv',
+                    self.path_to_present_dir +
+                    '/LSTM/Flags_for_training_LSTM/Flag' +
+                    '{0:03d}'.format(i + 1) + '.csv',
                     header=None,
                     delim_whitespace=False
                 )
@@ -469,7 +464,7 @@ class gen_for_LSTM(Sequence):
             LENGTH = int(random.uniform(1, self.maxlen))
             self.length.append(LENGTH)
             input_LSTM = self.data_LSTM[
-                :self.number_of_shape, i : i + self.time_step * LENGTH : self.time_step
+                :self.number_of_shape, i: i + self.time_step * LENGTH: self.time_step
             ]
             self.X_LSTM.append(input_LSTM)
             if self.config.data_loader.with_shape:
@@ -477,7 +472,7 @@ class gen_for_LSTM(Sequence):
                 self.X_CNN.append(input_CNN)
             if self.config.model.return_sequence[-1]:
                 output = self.data_LSTM[
-                    :self.number_of_shape, i + 1 : i + self.time_step * LENGTH + 1 : self.time_step
+                    :self.number_of_shape, i + 1: i + self.time_step * LENGTH + 1: self.time_step
                 ]
             else:
                 output = self.data_LSTM[
@@ -503,18 +498,19 @@ class gen_for_LSTM(Sequence):
         for i in range(self.len_tra, int(self.len_val + self.len_tra)):
             for j in range(self.number_of_shape):
                 self.X_LSTM_VAL[j * self.number_of_shape + i] = \
-                    self.data_LSTM[j, i : i + self.time_step * self.maxlen : self.time_step]
+                    self.data_LSTM[j, i: i + self.time_step *
+                                   self.maxlen: self.time_step]
                 if self.config.data_loader.with_shape:
                     self.X_CNN_VAL[j * self.number_of_shape + i] = \
                         self.data_CNN[j, i]
                 if self.config.model.return_sequence[-1]:
                     self.Y_VAL[j * self.number_of_shape + i] = \
                         self.data_LSTM[j,
-                        i + 1 : i + self.time_step * self.maxlen + 1 : self.time_step]
+                                       i + 1: i + self.time_step * self.maxlen + 1: self.time_step]
                 else:
                     self.Y_VAL[j * self.number_of_shape + i] = \
                         self.data_LSTM[j,
-                        i + self.time_step * self.maxlen + 1]
+                                       i + self.time_step * self.maxlen + 1]
 
     def make_val_data(self):
         if self.config.data_loader.with_shape:
