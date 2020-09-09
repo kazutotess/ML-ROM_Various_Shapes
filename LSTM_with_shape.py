@@ -72,10 +72,7 @@ def LSTM_with_shape(act, data_size, layer_num, unit_num, return_sequence,
     print('Activation function     : ' + act)
     print('\n---------------------------------------------------\n')
 
-    model.compile(
-        optimizer=optimizer,
-        loss=loss
-    )
+    model.compile(optimizer=optimizer, loss=loss)
 
     return model
 
