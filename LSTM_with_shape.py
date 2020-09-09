@@ -82,6 +82,7 @@ def LSTM_with_shape(act, data_size, layer_num, unit_num, return_sequence,
 
 def main():
     # specify GPU
+    # you need to coment out this part if you don't use GPU
     config = tf.ConfigProto(
         gpu_options=tf.GPUOptions(
             allow_growth=True,
@@ -123,15 +124,10 @@ def main():
     assert num_of_ts + time_step * (maxlen - 1) < \
         num_of_ts_for_data, 'The data aumont is not enough.'
 
-    data_LSTM = pd.read_csv(
-        path_data, header=None, delim_whitespace=False
-    )
+    data_LSTM = pd.read_csv(path_data, header=None, delim_whitespace=False)
     data_LSTM = data_LSTM.values
 
-    X_CNN = np.zeros([
-        number_of_shape * num_of_ts,
-        120, 120, 1
-    ])
+    X_CNN = np.zeros([number_of_shape * num_of_ts, 120, 120, 1])
     for i in range(number_of_shape):
         data_CNN = pd.read_csv(
             path_to_present_dir +

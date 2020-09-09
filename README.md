@@ -27,8 +27,8 @@ The code is written for educational clarity and not for speed.
 
 # Directory structure
     ML-ROM_Various_Shapes  ── CNN_autoencoder/
-                           ├─ data ─── pickles ─── data_001.pikle ~ data080.pickle
-                           │        │           └─ Test_data/data_001.pikle ~ data020.pickle
+                           ├─ data ─── CNNAE ─── data_001.pikle ~ data080.pickle
+                           │        │         └─ Test_data/data_001.pikle ~ data020.pickle
                            │        └─ LSTM ─── Dataset/
                            │                 └─ Flags/
                            ├─ .gitignore

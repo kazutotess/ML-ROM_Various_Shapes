@@ -154,7 +154,7 @@ def main():
                   x_num, y_num, phys_num])
 
     for i in tqdm(range(1, kind_num + 1)):
-        fnstr = path_to_present_dir + '/data/pickles/data_' + \
+        fnstr = path_to_present_dir + '/data/CNNAE/data_' + \
             '{0:03d}'.format(i)+'.pickle'
 
         # Pickle load
