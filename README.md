@@ -10,7 +10,7 @@ This repository consists
 
 For citations, please use the reference below:
 > K. Hasegawa, K. Fukami, T. Murata, and K. Fukagata,  
-> "Machine-learning-based reduced order modeling for unsteady flows around bluff bodies of various shapes,"  
+> "Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes,"  
 > [Theor. Comput. Fluid Dyn. 34, 367-383 (2020)][thesis].  
 
 Kazuto Hasegawa provides no guarantees for this code.  Use as-is and for academic research use only; no commercial use allowed without permission.
