@@ -2,10 +2,10 @@
 This repository contains the simple source codes of "Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes," [Theor. Comput. Fluid Dyn. 34, 367-383 (2020).][thesis] (Preprint: [arXiv:2003.07548 [physics.flu-dyn]][airxiv])
 
 <p align="center">
-    <img src="https://drive.google.com/uc?export=view&id=1fcVqm-nTGGrJ1beYEmXTgzDygxc3Ctny" width="600" height="400" alt="Isotropic turbulence"/>
+    <img src="https://drive.google.com/uc?export=view&id=1Yo4V7NE28CHHnRZshqc_x_f-3NSJwUNz" width="900" height="300" alt="Isotropic turbulence"/>
 </p>
 <p align="center">
-    The DNS (upper line) and reconstructed flow fields by the ML-ROM (lower line) are summarized
+    Flow fields computed by DNS (upper line) and predicted by ML-ROM (lower line). This figure shows velocity u, v and pressure p
 </p>
 
 # Informations  
