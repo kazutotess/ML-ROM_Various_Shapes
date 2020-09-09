@@ -2,7 +2,7 @@
 This repository contains the simple source codes of "Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes," [Theor. Comput. Fluid Dyn. 34, 367-383 (2020).][thesis] (Preprint: [arXiv:2003.07548 [physics.flu-dyn]][airxiv])
 
 <p align="center">
-    <img src="https://drive.google.com/uc?export=view&id=1Yo4V7NE28CHHnRZshqc_x_f-3NSJwUNz" width="900" height="300" alt="Isotropic turbulence"/>
+    <img src="https://drive.google.com/uc?export=view&id=1Yo4V7NE28CHHnRZshqc_x_f-3NSJwUNz" width="900" height="300" alt="Flow fields by DNS and ML-ROM"/>
 </p>
 <p align="center">
     Flow fields computed by DNS (upper line) and predicted by ML-ROM (lower line). This figure shows velocity u, v and pressure p
@@ -40,7 +40,7 @@ The code is written for educational clarity and not for speed.
                            │                 └─ Flags/
                            ├─ .gitignore
                            ├─ LSTM_with_shape.py
-                           ├─ MultiScaleCNNAE.py
+                           ├─ Multi-Scale_CNN-AE.py
                            └─ README.md
 
 
