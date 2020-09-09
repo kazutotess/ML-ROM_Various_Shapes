@@ -16,29 +16,21 @@ from keras import backend as K
 def conv_down_block(input_img, size, layer_nm, chanel_nm, act):
     for i in range(layer_nm[0]):
         if i == 0:
-            x = Conv2D(chanel_nm[0],
-                       (size, size),
-                       padding='same')(input_img)
+            x = Conv2D(chanel_nm[0], (size, size), padding='same')(input_img)
         else:
-            x = Conv2D(chanel_nm[0],
-                       (size, size),
-                       padding='same')(x)
+            x = Conv2D(chanel_nm[0], (size, size), padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(act)(x)
         x = MaxPooling2D((2, 2), padding='same')(x)
 
     for i in range(layer_nm[1]):
-        x = Conv2D(chanel_nm[1],
-                   (size, size),
-                   padding='same')(x)
+        x = Conv2D(chanel_nm[1], (size, size), padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(act)(x)
         x = MaxPooling2D((2, 2), padding='same')(x)
 
     for i in range(layer_nm[2]):
-        x = Conv2D(chanel_nm[2],
-                   (size, size),
-                   padding='same')(x)
+        x = Conv2D(chanel_nm[2], (size, size), padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(act)(x)
         if i != layer_nm[2] - 1:
@@ -49,31 +41,24 @@ def conv_down_block(input_img, size, layer_nm, chanel_nm, act):
 def conv_up_block(encoded, size, layer_nm, chanel_nm, act, phys_num):
     for i in range(layer_nm[-1] - 1):
         if i == 0:
-            x = Conv2D(chanel_nm[-1],
-                       (size, size),
-                       padding='same')(encoded)
+            x = Conv2D(chanel_nm[-1], (size, size), padding='same')(encoded)
         else:
-            x = Conv2D(chanel_nm[-1],
-                       (size, size),
-                       padding='same')(x)
+            x = Conv2D(chanel_nm[-1], (size, size), padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(act)(x)
-        x = UpSampling2D((2, 2))(x)  # 12,6,4
+        x = UpSampling2D((2, 2))(x)
 
     for i in range(layer_nm[-2]):
-        x = Conv2D(chanel_nm[-2],
-                   (size, size),
-                   padding='same')(x)
+        x = Conv2D(chanel_nm[-2], (size, size), padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(act)(x)
-        x = UpSampling2D((2, 2))(x)  # 24,12,8
+        x = UpSampling2D((2, 2))(x)
 
     for i in range(layer_nm[-3]):
-        x = Conv2D(
-            chanel_nm[-3], (size, size), padding='same')(x)
+        x = Conv2D(chanel_nm[-3], (size, size), padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation(act)(x)
-        x = UpSampling2D((2, 2))(x)  # 384,192,16
+        x = UpSampling2D((2, 2))(x)
     x = Conv2D(phys_num, (size, size),
                activation='linear', padding='same')(x)
     return x
@@ -81,23 +66,15 @@ def conv_up_block(encoded, size, layer_nm, chanel_nm, act, phys_num):
 
 def MS_CNN_AE(x_num, y_num, phys_num, filsize, layer_nm, chanel_nm, act,
               optimizer, loss):
-    input_img = Input(
-        shape=(
-            x_num,
-            y_num,
-            phys_num)
-    )
+    input_img = Input(shape=(x_num, y_num, phys_num))
 
     filsize1 = filsize[0]
     filsize2 = filsize[1]
     filsize3 = filsize[2]
 
-    conv1 = conv_down_block(
-        input_img, filsize1, layer_nm, chanel_nm, act)
-    conv2 = conv_down_block(
-        input_img, filsize2, layer_nm, chanel_nm, act)
-    conv3 = conv_down_block(
-        input_img, filsize3, layer_nm, chanel_nm, act)
+    conv1 = conv_down_block(input_img, filsize1, layer_nm, chanel_nm, act)
+    conv2 = conv_down_block(input_img, filsize2, layer_nm, chanel_nm, act)
+    conv3 = conv_down_block(input_img, filsize3, layer_nm, chanel_nm, act)
     x = Add()([conv1, conv2, conv3])
     x = Conv2D(chanel_nm[2], (3, 3), padding='same')(x)
     x = BatchNormalization()(x)
@@ -132,16 +109,14 @@ def MS_CNN_AE(x_num, y_num, phys_num, filsize, layer_nm, chanel_nm, act,
 
     model = Model(input_img, decoded)
 
-    model.compile(
-        optimizer=optimizer,
-        loss=loss
-    )
+    model.compile(optimizer=optimizer, loss=loss)
 
     return model
 
 
 def main():
     # specify GPU
+    # you need to coment out this part if you don't use GPU
     config = tf.ConfigProto(
         gpu_options=tf.GPUOptions(
             allow_growth=True,
@@ -191,7 +166,7 @@ def main():
     X = np.reshape(X, [-1, X.shape[-3], X.shape[-2], X.shape[-1]])
 
     x_train, x_test, y_train, y_test = \
-        train_test_split(X, X[:, :, :, :phys_num], test_size=ratio_tr_te,
+        train_test_split(X, X, test_size=ratio_tr_te,
                          random_state=None)
 
     # construct machine learning model (Multi-Scale CNN AE)
