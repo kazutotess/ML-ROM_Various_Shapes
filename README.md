@@ -1,13 +1,12 @@
 # Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes
-This repository contains the source codes of "Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes" [Theor. Comput. Fluid Dyn. 34, 367-383 (2020).][thesis] (Preprint: [arXiv:2003.07548 [physics.flu-dyn]][airxiv])
+This repository contains the simple source codes of "Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes," [Theor. Comput. Fluid Dyn. 34, 367-383 (2020).][thesis] (Preprint: [arXiv:2003.07548 [physics.flu-dyn]][airxiv])
 
 # Informations  
-Author: Kazuto Hasegawa ([Keio University][fukagatalab])
+Author: Kazuto Hasegawa ([Keio University][fukagatalab], Politecnico di Milano)
 
 This repository consists  
-1. Make_models (for creation of CNN and LSTM models with arbitrary options)
-2. MultiScaleCNNAE.py (to create Multi-scale CNN-AE easily)
-3. LSTM_with_shape.py (to create LSTM model easily)
+1. Multi-Scale_CNN-AE.py (to create Multi-scale CNN-AE)
+2. LSTM_with_shape.py (to create LSTM model)
 
 For citations, please use the reference below:
 > K. Hasegawa, K. Fukami, T. Murata, and K. Fukagata,  
@@ -25,15 +24,14 @@ The code is written for educational clarity and not for speed.
     * numpy
     * pandas
     * tqdm
-    * dotmap
 
 # Directory structure
     ML-ROM_Various_Shapes  ── CNN_autoencoder/
                            ├─ Make_models/
                            ├─ data ─── pickles ─── data_001.pikle ~ data080.pickle
                            │        │           └─ Test_data/data_001.pikle ~ data020.pickle
-                           │        └─ LSTM ─── Dataset
-                           │                 └─ Flags
+                           │        └─ LSTM ─── Dataset/
+                           │                 └─ Flags/
                            ├─ .gitignore
                            ├─ LSTM_with_shape.py
                            ├─ MultiScaleCNNAE.py
