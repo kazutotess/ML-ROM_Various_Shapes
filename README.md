@@ -5,7 +5,7 @@ This repository contains the simple source codes of "Machine-learning-based redu
     <img src="https://drive.google.com/uc?export=view&id=1Yo4V7NE28CHHnRZshqc_x_f-3NSJwUNz" width="900" height="300" alt="Flow fields by DNS and ML-ROM"/>
 </p>
 <p align="center">
-    Flow fields computed by DNS (upper line) and predicted by ML-ROM (lower line). This figure shows velocity u, v and pressure p
+    Flow fields computed by DNS (upper line) and predicted by ML-ROM (lower line). This figure shows velocity u, v and pressure p from left. Copyright © 2020 by the Springer.
 </p>
 
 # Informations  
@@ -34,8 +34,8 @@ The code is written for educational clarity and not for speed.
 
 # Directory structure
     ML-ROM_Various_Shapes  ── CNN_autoencoder/
-                           ├─ data ─── CNNAE ─── data_001.pikle ~ data080.pickle
-                           │        │         └─ Test_data/data_001.pikle ~ data020.pickle
+                           ├─ data ─── CNNAE ─── data_001.pickle ~ data080.pickle
+                           │        │         └─ Test_data/data_001.pickle ~ data020.pickle
                            │        └─ LSTM ─── Dataset/
                            │                 └─ Flags/
                            ├─ .gitignore
