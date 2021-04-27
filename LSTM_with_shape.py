@@ -7,7 +7,7 @@ from keras.layers import (LSTM, Activation, Add, BatchNormalization, Conv2D,
 from keras.models import Model
 import tensorflow as tf
 from keras.backend import tensorflow_backend
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, CSVLogger
 from keras import backend as K
 
 
@@ -83,7 +83,7 @@ def main():
     config = tf.ConfigProto(
         gpu_options=tf.GPUOptions(
             allow_growth=True,
-            visible_device_list="2"
+            visible_device_list="3"
         )
     )
     session = tf.Session(config=config)
@@ -100,8 +100,8 @@ def main():
     path_to_present_dir = './'  # directory which contains flow data
     dataset_name = '72_values_MS-BN-1_dataset.csv'  # data file name
     # path for data file
-    path_data = path_to_present_dir + '/data/LSTM/Dataset/' + dataset_name
-    save_file = '/LSTM/'  # directory for saving ML model
+    path_data = path_to_present_dir + 'data/LSTM/Dataset/' + dataset_name
+    save_file = 'LSTM/'  # directory for saving ML model
     model_name = 'Test_LSTM'  # name of ML model files
 
     layer_num = 3  # number of LSTM layer
@@ -171,6 +171,7 @@ def main():
     # train the model
     callbacks = []
 
+    # model save
     os.makedirs(path_to_present_dir + save_file + 'Model/', exist_ok=True)
     callbacks.append(
         ModelCheckpoint(
@@ -179,6 +180,19 @@ def main():
             save_best_only=True,
             verbose=1
         )
+    )
+
+    # history save
+    os.makedirs(
+        path_to_present_dir + save_file + 'History/',
+        exist_ok=True
+    )
+    callbacks.append(
+        CSVLogger(path_to_present_dir +
+                  save_file +
+                  'History/' +
+                  model_name +
+                  '.csv',)
     )
 
     print('\n-----------------Training Condition----------------\n')
@@ -191,7 +205,7 @@ def main():
 
     print('Training is now begining.')
 
-    history = model.fit(
+    model.fit(
         x_train,
         y_train,
         epochs=num_epochs,
@@ -201,22 +215,6 @@ def main():
         callbacks=callbacks,
         verbose=1
     )
-
-    df_results = pd.DataFrame(history.history)
-    df_results['epoch'] = history.epoch
-    os.makedirs(
-        path_to_present_dir + save_file + 'History/',
-        exist_ok=True
-    )
-    df_results.to_csv(
-        path_or_buf=path_to_present_dir +
-        save_file +
-        'History/' +
-        model_name +
-        '.csv',
-        index=False
-    )
-    print('History was saved.')
 
     K.clear_session()
     print('The session was cleared.')

@@ -1,7 +1,6 @@
 import os
 import pickle
 import numpy as np
-import pandas as pd
 from tqdm import tqdm
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
@@ -9,7 +8,7 @@ from keras.layers import (Input, Conv2D, MaxPooling2D, UpSampling2D,
                           Add, BatchNormalization, Activation)
 from keras.models import Model
 from keras.backend import tensorflow_backend
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, CSVLogger
 from keras import backend as K
 
 
@@ -103,7 +102,6 @@ def MS_CNN_AE(x_num, y_num, phys_num, filsize, layer_nm, chanel_nm, act,
              decoded.shape[-2],
              decoded.shape[-1]))
     print('\nOptimizer               : ' + optimizer)
-    print('Loss function           : ' + loss)
     print('Activation function     : ' + act)
     print('\n---------------------------------------------------\n')
 
@@ -114,13 +112,24 @@ def MS_CNN_AE(x_num, y_num, phys_num, filsize, layer_nm, chanel_nm, act,
     return model
 
 
+def gdl_mse(y_true, y_pred):
+    mse = K.mean(K.square(y_pred - y_true))
+    t1 = K.abs((y_true[:, 1:, :, :] - y_true[:, :-1, :, :]) -
+               (y_pred[:, 1:, :, :] - y_pred[:, :-1, :, :]))
+    t2 = K.abs((y_true[:, :, :-1, :] - y_true[:, :, 1:, :]) -
+               (y_pred[:, :, :-1, :] - y_pred[:, :, 1:, :]))
+
+    out = (K.mean(t1) + K.mean(t2)) + mse
+    return out
+
+
 def main():
     # specify GPU
     # you need to coment out this part if you don't use GPU
     config = tf.ConfigProto(
         gpu_options=tf.GPUOptions(
             allow_growth=True,
-            visible_device_list="2"
+            visible_device_list="3"
         )
     )
     session = tf.Session(config=config)
@@ -134,7 +143,7 @@ def main():
     phys_num = 3  # u, v, p
 
     path_to_present_dir = './'  # directory which contains flow data
-    save_file = '/CNN_autoencoder/'  # directory for saving ML model
+    save_file = 'CNN_autoencoder/'  # directory for saving ML model
     model_name = 'Test_CNN_AE'  # name of ML model file
     # the model will be saved as
     # path_to_present_dir + save_file + 'Model/' + model_name + '.hdf5'
@@ -143,7 +152,7 @@ def main():
     filsize = [3, 5, 9]  # filter size for each scale CNN
     layer_nm = [1, 4, 2]  # number of layers
     chanel_nm = [16, 8, 4]  # number of chanels
-    loss = 'gdl_mse'  # loss function
+    loss = gdl_mse  # loss function
     optimizer = 'adam'  # optimizer
     ratio_tr_te = 0.2  # ratio of training and validation data
     num_epochs = 2  # number of epochs
@@ -176,6 +185,7 @@ def main():
     # train the model
     callbacks = []
 
+    # model save
     os.makedirs(path_to_present_dir + save_file + 'Model/', exist_ok=True)
     callbacks.append(
         ModelCheckpoint(
@@ -184,6 +194,19 @@ def main():
             save_best_only=True,
             verbose=1
         )
+    )
+
+    # history save
+    os.makedirs(
+        path_to_present_dir + save_file + 'History/',
+        exist_ok=True
+    )
+    callbacks.append(
+        CSVLogger(path_to_present_dir +
+                  save_file +
+                  'History/' +
+                  model_name +
+                  '.csv')
     )
 
     print('\n-----------------Training Condition----------------\n')
@@ -196,7 +219,7 @@ def main():
 
     print('Training is now begining.')
 
-    history = model.fit(
+    model.fit(
         x_train,
         y_train,
         epochs=num_epochs,
@@ -206,22 +229,6 @@ def main():
         callbacks=callbacks,
         verbose=1
     )
-
-    df_results = pd.DataFrame(history.history)
-    df_results['epoch'] = history.epoch
-    os.makedirs(
-        path_to_present_dir + save_file + 'History/',
-        exist_ok=True
-    )
-    df_results.to_csv(
-        path_or_buf=path_to_present_dir +
-        save_file +
-        'History/' +
-        model_name +
-        '.csv',
-        index=False
-    )
-    print('History was saved.')
 
     K.clear_session()
     print('The session was cleared.')
