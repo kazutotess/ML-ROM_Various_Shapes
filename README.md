@@ -8,7 +8,7 @@ This repository contains the simple source codes of "Machine-learning-based redu
     Flow fields computed by DNS (upper line) and predicted by ML-ROM (lower line). This figure shows velocity u, v and pressure p from left. Copyright © 2020 by the Springer.
 </p>
 
-# Informations  
+# Information  
 Author: Kazuto Hasegawa ([Keio University][fukagatalab], Politecnico di Milano)
 
 This repository consists  
