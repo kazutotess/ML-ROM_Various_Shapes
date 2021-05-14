@@ -1,5 +1,7 @@
 # Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes
 This repository contains the simple source codes of "Machine-learning-based reduced-order modeling for unsteady flows around bluff bodies of various shapes," [Theor. Comput. Fluid Dyn. 34, 367-383 (2020).][thesis] (Preprint: [arXiv:2003.07548 [physics.flu-dyn]][airxiv])
+These sample codes are not a stand-alone codes.
+The users should prepare own field data.
 
 <p align="center">
     <img src="https://drive.google.com/uc?export=view&id=1Yo4V7NE28CHHnRZshqc_x_f-3NSJwUNz" width="900" height="300" alt="Flow fields by DNS and ML-ROM"/>
