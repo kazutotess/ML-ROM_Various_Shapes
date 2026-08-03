@@ -49,5 +49,5 @@ The code is written for educational clarity and not for speed.
 
 
 [thesis]: https://link.springer.com/article/10.1007/s00162-020-00528-w 
-[airxiv]: https://arxiv.org/abs/2003.07548
+[arxiv]: https://arxiv.org/abs/2003.07548
 [fukagatalab]: http://kflab.jp/en/index.php?top
